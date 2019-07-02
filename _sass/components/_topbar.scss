@@ -1,0 +1,344 @@
+@import "compass/css3/border-radius";
+@import "compass/css3/transform";
+@import "compass/css3/transition";
+
+//
+// Top Bar Variables
+//
+$include-html-top-bar-classes: $include-html-classes;
+
+// Background color for the top bar
+$topbar-bg-color: transparentize($dd-blue, 0.1) !default;
+$topbar-bg: $topbar-bg-color !default;
+$topbar-nav-button-padding: 5px 15px;
+
+$topbar-button-bg-color: #9d261d;
+
+// Height and margin
+$topbar-height: 60px !default;
+// $topbar-margin-bottom: 0 !default;
+$topbar-margin-bottom: rem-calc(30);
+$topbar-margin-top: rem-calc(28);
+
+// Control Input height for top bar
+$topbar-input-height: 2.45em !default;
+
+// Controlling the styles for the title in the top bar
+$topbar-title-weight: normal !default;
+$topbar-title-font-size: 2.5rem;
+
+// Set the link colors and styles for top-level nav
+$topbar-link-color: black !default;
+$topbar-link-color-hover: black !default;
+$topbar-link-color-active: black !default;
+$topbar-link-weight: bold !default;
+$topbar-link-font-size: rem-calc(18);
+$topbar-link-hover-lightness: -10% !default; // Darken by 30%
+$topbar-link-bg-hover: transparentize(adjust-color($topbar-bg-color, $lightness: $topbar-link-hover-lightness), 0.1) !default;
+$topbar-link-bg-active: adjust-color($topbar-bg-color, $lightness: $topbar-link-hover-lightness) !default;
+
+// Top menu icon styles
+$topbar-menu-link-transform: uppercase !default;
+$topbar-menu-link-font-size: remCalc(20);
+$topbar-menu-link-weight: bold !default;
+$topbar-menu-link-color: #fff !default;
+$topbar-menu-icon-color: #fff !default;
+$topbar-menu-link-color-toggled: #888 !default;
+$topbar-menu-icon-color-toggled: #888 !default;
+
+// Transitions and breakpoint styles
+$topbar-transition-speed: 300ms;
+// Using rem-calc for the below breakpoint causes issues with top bar
+$topbar-breakpoint: unquote("#{upper-bound($medium-range)}"); // Change to 9999px for always mobile layout
+$topbar-media-query: "#{$screen} and (min-width:#{lower-bound($topbar-breakpoint)})";
+
+// wide pages need to be hidden.
+
+html {
+  overflow-x: hidden;
+}
+
+// Used to provide media query values for javascript components.
+// This class is generated despite the value of $include-html-top-bar-classes
+// to ensure width calculations work correctly.
+meta.foundation-mq-topbar {
+  font-family: "/" + unquote($topbar-media-query) + "/";
+  width: $topbar-breakpoint;
+}
+
+header.site-header {
+  line-height: $topbar-height;
+  font-size: $rem-base;
+  z-index: 999;
+  left: 0;
+  right: 0;
+  background-color: $dd-blue-dark;
+
+
+
+  // Menu button
+  button {
+    height: 25px;
+    position: absolute;
+    display: block;
+    width: 32px;
+    top: 30px;
+    right: 26px;
+    background: none;
+    cursor: pointer;
+    border-top: 3px solid rgba(255,255,255,1);
+    border-bottom: 3px solid rgba(255,255,255,1);
+    border-left: 0;
+    border-right: 0;
+    transition: border-color 150ms ease-in-out;
+    display: block;
+    position: absolute;
+    &:focus {
+      outline: none;
+    }
+    &:after, &:before {
+      content: "";
+      position: absolute;
+      right: 0;
+      height: 3px;
+      background: white;
+      transform: rotate(0);
+      transition: transform 250ms ease-in-out;
+      left: 0;
+      border: 0;
+      top: 8px;
+    }
+  }
+
+  .top-bar.expanded button {
+    border-color: rgba(255,255,255,0);
+    &:after {
+      transform: rotate(45deg);
+    }
+    &:before {
+      transform: rotate(-45deg);
+    }
+  }
+
+  ul.open, .top-bar.expanded ul {
+    height: auto;
+    max-height: 500%;
+    min-height: calc(100vh - 85px);
+    background-color: $dd-blue-dark;
+    display: flex;
+    justify-content: space-around;
+    flex-direction: column;
+    padding: 45px 0 78px 0;
+    opacity: 1;
+  }
+
+  // Logo in CSS + Title
+  h1 {
+    font-size: 1.8rem;
+    line-height: 1;
+    font-weight: 500;
+    margin: 0;
+    a:first-child {
+      z-index: 1;
+      position: relative;
+    }
+    a {
+      color: #fff;
+      display: inline-block;
+      background-color: $dd-blue-light;
+      padding: 12px 17px 0px 17px;
+      -webkit-box-decoration-break: clone;
+      box-decoration-break: clone;
+    }
+    a:last-child {
+      padding: 9px 17px 12px 17px;
+      margin-top: -4px;
+    }
+  }
+
+  ul {
+    width: 100%;
+    list-style: none;
+    display: block;
+    font-size: $rem-base;
+    margin: 0;
+    max-height: 0;
+    overflow-y: hidden;
+    position: absolute;
+    opacity: 0;
+    transition: opacity 200ms ease-out;
+    z-index: 999;
+    li {
+      font-family: "Rubik", sans-serif;
+      &:last-child {
+        display: none;
+      }
+      & > a {
+        white-space: nowrap;
+        display: block;
+        width: 100%;
+        font-weight: $topbar-link-weight;
+        padding: 5px 24px;
+        color: white;
+        font-size: 2.2rem;
+
+        &.donate {
+          font-size: 2.3rem;
+          padding: 32px 24px;
+          position: relative;
+          margin: 16px 0px;
+          &:before, &:after {
+            content: "";
+            position: absolute;
+            height: 1px;
+            background-color: rgba(255,255,255,0.5);
+            width: 40px;
+            left: 24px;
+          }
+          &:before {
+            top: 0;
+          }
+          &:after {
+            bottom: 0;
+          }
+        }
+        &.lang {
+          text-transform: uppercase;
+          font-weight: 300;
+          font-size: 1.1rem;
+        }
+      }
+    }
+  }
+}
+
+// Top Bar styles intended for screen sizes above the breakpoint.
+@media #{$topbar-media-query} {
+  // Highlight the active page
+  body[data-section="/ourwork/"] nav ul li > a[href="/ourwork/"],
+  body[data-section="/mapeo/"] nav ul li > a[href="/mapeo/"],
+  body[data-section="/blog/"] nav ul li > a[href="/blog/"],
+  body[data-section="/team/"] nav ul li > a[href="/team/"],
+  body[data-section="/aboutus/"] nav ul li > a[href="/aboutus/"],
+  body[data-section="/jobs/"] nav ul li > a[href="/aboutus/"],
+  body[data-section="/team/"] nav ul li > a[href="/aboutus/"],
+  body[data-section="/mission/"] nav ul li > a[href="/aboutus/"],
+  body[data-section="/supporters/"] nav ul li > a[href="/aboutus/"] {
+    background-color: rgba(255,255,255,0.9);
+  }
+
+
+  header.site-header {
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: unset;
+    margin-bottom: 2rem;
+
+    h1 {
+      font-size: 2.3rem;
+      a {
+        padding: 12px 20px 0px 20px;
+      }
+      a:last-child {
+        padding: 9px 20px 10px 20px;
+        margin-top: -4px;
+      }
+    }
+
+    button {
+      display: none;
+    }
+
+    ul {
+      width: auto;
+      margin: 0;
+      background-color: transparent;
+      position: static;
+      max-height: unset;
+      opacity: 1;
+      display: flex;
+      font-size: 0.9rem;
+      li {
+        margin: 0;
+        &:last-child {
+          order: -1;
+        }
+        & > a {
+          color: #000033;
+          background-color: rgba(255,255,255,0.7);
+          font-size: 1.2em;
+          padding: 5px 17px;
+          margin: 0 14px;
+          width: auto;
+          font-weight: 500;
+          &:hover {
+            background-color: rgba(255,255,255,0.9);
+            color: black;
+          }
+          &.donate {
+            padding: 5px 17px;
+            margin: 0 28px 0 14px;
+            font-size: 1.2em;
+            color: white;
+            background-color: #FF3301;
+            &:before, &:after {
+              content: none;
+            }
+            &:hover {
+              background-color: darken(#FF3301, 10%);
+            }
+          }
+          &.lang {
+            text-transform: uppercase;
+            color: rgba(255,255,255,0.9);
+            background-color: rgba(0,0,51,0.7);
+            font-weight: 300;
+            font-size: 0.8em;
+            line-height: calc(1.6 * 1.2 / 0.8);
+            &:hover {
+              color: rgba(255,255,255,1);
+              background-color: rgba(0,0,51,0.9);
+            }
+          }
+        }
+      }
+    }
+  }
+
+  body.full-header header.site-header {
+    position: absolute;
+    left: 0;
+    right: 0;
+    -webkit-transform: translate3d(0,0,0);
+            transform: translate3d(0,0,0);
+    transition: -webkit-transform 400ms ease-out;
+    transition: transform 400ms ease-out;
+    &.affix {
+      position: absolute;
+      top: 33.33%;
+    }
+    &.affix-top {
+      position: fixed;
+    }
+  }
+}
+
+@media #{$xlarge-up} {
+  header.site-header {
+    h1 {
+      font-size: 2.5rem;
+      a {
+        padding: 12px 20px 0px 20px;
+      }
+      a:last-child {
+        padding: 9px 20px 12px 20px;
+        margin-top: -4px;
+      }
+    }
+    ul {
+      font-size: 1.1rem;
+    }
+  }
+}
